@@ -3,7 +3,7 @@
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
-define('DB_NAME', 'labtif_movie');
+define('DB_NAME', 'db_labtif_movie');
 
 class Database
 {
@@ -83,6 +83,38 @@ class Database
         // $q->execute();
         // echo $this->query;
     }
+
+    //UPDATE table SET column1 = "value1", column2 = "value2" WHERE condition;
+    function update($arr = array()) {
+        //karena pemanggilan functiononnya adalah ->table()->where()->update()
+        //maka disini kita hanya perlu mengganti kata SELECT * FROM menjadi UPDATE
+        $this->query = str_replace('SELECT * FROM', 'UPDATE', $this->query);
+
+        //memisahkan query menjadi 2 bagian berdasarkan kata WHERE
+        $part = explode(' WHERE ', $this->query); 
+
+        $val = '';
+        foreach ($arr as $key => $value) {
+            //column1 = 'value1', colum2 = 'value2', ......
+            $val .= $key . " = '" . $value . "', "; 
+        }
+
+        //merangkai kembali query UPDATE
+        $this->query = $part[0] . " SET " . substr($val, 0, -2) . " WHERE ". $part[1];
+
+        //menyiapkan query
+        $q = $this->mysqli->prepare($this->query) or die($this->mysqli->error);
+        //eksekusi query
+        $q->execute();
+
+        // echo $this->query . "<br>";
+        // echo $part[0] . "<br>";
+        // echo $part[1] . "<br>";
+        // echo $val . "<br>";
+
+
+
+    }
 }
 
 // $db = new Database();
@@ -93,3 +125,5 @@ class Database
 //     'description' => 'asdfsdf',
 //     'cover' => 'adsfsfs'
 // ]);
+
+// $db->table('movies')->where(['id' => '1'])->update(['title' => 'Contoh', 'genre' => 'Contoh Genre']);

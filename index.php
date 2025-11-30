@@ -80,29 +80,35 @@
     </div>
   </div>
 
-  <!-- Table Content -->
-
   <!-- Card Content Movie -->
 
-  <!-- <div class="card-grid">
-
-    <a class="card" href="crud/moviedetail.php?id=<?= "$data[id]" ?>">
-      <div class="card-image-container">
-        <img class="card-image" src="images/<?= "$data[cover] " ?>" />
-      </div>
-
-      <div class="card-content">
-        <h3 class="card-title"><?= "$data[title]" ?></h3>
-        <p class="card-description">
-          <?= "$data[description]" ?>
-        </p>
-
-        <div class="card-tags">
-          <span class="tag"><?= "$data[genre]" ?></span>
+  <div class="card-grid">
+    <?php
+    require_once 'movie.php';
+    $movie = new Movie();
+    $datas = $movie->getAllMovies();
+    foreach ($datas as $data) {
+    ?>
+      <a class="card" href="crud/moviedetail.php?id=<?= "$data[id]" ?>">
+        <div class="card-image-container">
+          <img class="card-image" src="images/<?= "$data[cover] " ?>" />
         </div>
-      </div>
-    </a>
-  </div> -->
+
+        <div class="card-content">
+          <h3 class="card-title"><?= "$data[title]" ?></h3>
+          <p class="card-description">
+            <?= "$data[description]" ?>
+          </p>
+
+          <div class="card-tags">
+            <span class="tag"><?= "$data[genre]" ?></span>
+          </div>
+        </div>
+      </a>
+    <?php
+    }
+    ?>
+  </div>
   <!-- Footer -->
   <footer class="custom-footer">
     <div class="footer-container">

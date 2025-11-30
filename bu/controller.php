@@ -1,6 +1,6 @@
 <?php
 
-require_once 'database.php';
+require_once '../database.php';
 
 class Movie
 {
@@ -24,5 +24,10 @@ class Movie
     function addMovie($data)
     {
         return $this->db->table('movies')->insert($data);
+    }
+
+    function updateMovie($id, $data)
+    {
+        return $this->db->table('movies')->where(['id' => $id])->update($data);
     }
 }

@@ -1,3 +1,7 @@
+<?php
+ob_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -150,46 +154,82 @@
   <body>
     <div class="container">
       <a href="index.php" class="back-btn">← Back</a>
+        <?php
+            require_once '../movie.php';
+            $movie = new Movie();
+            $datas = $movie->getMovieById($_GET['id']);
+            foreach ($datas as $data) {
+
+        ?>
+
 
       <div class="card">
-        <form>
-          <h2 class="form-title">Add Movie</h2>
+        <form method="POST" enctype="multipart/form-data">
+                <h2 class="form-title">Add Movie</h2>
 
-          <div class="form-grid">
-            <label for="Title" class="form-label">Title</label>
-            <div class="input-group">
-              <input id="Title" type="text" class="form-input" />
-            </div>
-          </div>
+                <div class="form-grid">
+                    <label for="Title" class="form-label">Title</label>
+                    <div class="input-group">
+                        <input id="Title" type="text" class="form-input" name="title" required value="<?= "$data[title]" ?>" />
+                    </div>
+                </div>
 
-          <div class="form-grid">
-            <label for="genre" class="form-label">Genre</label>
-            <div class="input-group">
-              <input id="genre" type="text" class="form-input" />
-            </div>
-          </div>
+                <div class="form-grid">
+                    <label for="genre" class="form-label">Genre</label>
+                    <div class="input-group">
+                        <input id="genre" type="text" class="form-input" name="genre" required value="<?= "$data[genre]" ?>"/>
+                    </div>
+                </div>
 
-          <div class="form-grid">
-            <label for="cover" class="form-label">Cover</label>
-            <div class="input-group">
-              <input type="file" id="cover" class="file-input" />
-            </div>
-          </div>
+                <div class="form-grid">
+                    <label for="cover" class="form-label">Cover</label>
+                    <div class="input-group">
+                        <input type="file" id="cover" class="file-input" accept="image/png, image/jpg, image/jpeg" name="cover" />
+                        <!-- File lama -->
+                        <input type="hidden" name="cover_old" value="<?= $data['cover']; ?>">
+                    </div>
+                </div>
 
-          <div class="form-grid">
-            <label for="description" class="form-label">Description</label>
-            <div class="input-group">
-              <textarea
-                id="description"
-                class="form-textarea"
-                placeholder="Add a Description For the Movie."
-              ></textarea>
-            </div>
-          </div>
+                <div class="form-grid">
+                    <label for="description" class="form-label">description</label>
+                    <div class="input-group">
+                        <textarea
+                            id="description"
+                            class="form-textarea"
+                            placeholder="Add a description For the Movie."
+                            name="description" required ><?=$data['description'] ?></textarea>
+                    </div>
+                </div>
 
-          <button type="button" class="submit-btn">Submit Movie</button>
-        </form>
+                <button type="submit" name="submit" class="submit-btn">Submit Movie</button>
+            </form>
+
       </div>
     </div>
+    <?php
+            }
+            if($_SERVER['REQUEST_METHOD'] == 'POST') {
+                $id = $_GET['id'];
+                 if(!empty($_FILES['cover']['name'])) {
+                    $cover = $_FILES['cover']['name'];
+
+                    $path = "../images/" . basename($cover);
+                    move_uploaded_file($_FILES['cover']['tmp_name'], $path);
+                } else {
+                    $cover = $_POST['cover_old'];
+                }
+
+                $movie->updateMovie($id, [
+                    'title' => $_POST['title'],
+                    'genre' => $_POST['genre'],
+                    'description' => $_POST['description'],
+                    'cover' => $cover
+                ]);
+
+                header('Refresh:0; url=index.php');
+            }
+
+
+    ?>
   </body>
 </html>
