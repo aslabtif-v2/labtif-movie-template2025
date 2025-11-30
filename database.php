@@ -48,4 +48,12 @@ class Database
         $result = $this->mysqli->query($this->query);
         return $result->fetch_all(MYSQLI_ASSOC);
     }
+
+    // DELETE FROM table WHERE id=id
+    function delete() {
+        //SELECT * FROM jadi DELETE FROM
+        $this->query = str_replace('SELECT *', 'DELETE', $this->query);
+        $q = $this->mysqli->prepare($this->query) or die($this->mysqli->error);
+        $q->execute();
+    }
 }
