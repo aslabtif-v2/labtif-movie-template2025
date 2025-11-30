@@ -20,9 +20,4 @@ class Movie
     {
         return $this->db->table('movies')->where(['id' => $id])->get();
     }
-
-    function addMovie($data)
-    {
-        return $this->db->table('movies')->insert($data);
-    }
 }

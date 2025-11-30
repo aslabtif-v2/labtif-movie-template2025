@@ -48,25 +48,4 @@ class Database
         $result = $this->mysqli->query($this->query);
         return $result->fetch_all(MYSQLI_ASSOC);
     }
-
-    public function insert($arr = array())
-    {
-        $this->query = str_replace('SELECT * FROM', 'INSERT INTO', $this->query);
-
-        $columns = '';
-        $vals = '';
-
-        foreach ($arr as $key => $value) {
-            $columns .= $key . ", ";
-            $vals .= "'" . $value . "', ";
-        }
-
-        $this->query .= " (" . substr($columns, 0, -2) . ") VALUES (" . substr($vals, 0, -2) . ")";
-
-        $q = $this->mysqli->prepare($this->query) or die($this->mysqli->error);
-
-        if ($q->execute()) {
-            return true;
-        }
-    }
 }
