@@ -115,6 +115,13 @@ class Database
 
 
     }
+
+    //DELETE FROM table WHERE ....
+    function delete() {
+        $this->query = str_replace('SELECT *', 'DELETE', $this->query);
+        $q = $this->mysqli->prepare($this->query) or die($this->mysqli->error);
+        $q->execute();
+    }
 }
 
 // $db = new Database();
