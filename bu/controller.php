@@ -30,4 +30,8 @@ class Movie
     {
         return $this->db->table('movies')->where(['id' => $id])->update($data);
     }
+
+    function deleteMovie($id) {
+        return $this->db->table('movies')->where(['id' => $id])->delete();
+    }
 }
