@@ -193,23 +193,30 @@
             </form>
 
             <?php
+            //memasukkan file movie.php
             require_once '../movie.php';
+            //membuat objek dari class Movie
             $movie = new Movie();
+            //jika tombol submit ditekan
             if (isset($_POST['submit'])) {
+                //mengambil data dari form
                 $title = $_POST['title'];
                 $genre = $_POST['genre'];
                 $description = $_POST['description'];
                 $cover = $_FILES['cover']['name'];
 
+                //memindahkan file cover ke folder images
                 $path = "../images/" . basename($cover);
                 move_uploaded_file($_FILES['cover']['tmp_name'], $path);
 
+                //menyimpan data ke database
                 $data = [
                     'title' => $title,
                     'genre' => $genre,
                     'description' => $description,
                     'cover' => $cover
                 ];
+                //memanggil method addMovie dari class Movie
                 if ($movie->addMovie($data)) {
                     echo "<script>alert('Data berhasil disimpan'); window.location.href='index.php';</script>";
                 }

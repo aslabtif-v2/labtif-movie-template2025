@@ -1,3 +1,7 @@
+<?php
+ob_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -212,19 +216,34 @@
       text-decoration: underline;
     }
 
-    .delete-link {
+    .delete-form {
       display: inline-flex;
       align-items: center;
       gap: 0.25rem;
+      
+    }
+
+    .delete-link {
       font-size: 0.875rem;
       color: #f52626;
       text-decoration: none;
       font-weight: 500;
       margin-left: 1rem;
+      background: transparent;
+      border: none;
     }
 
     .delete-link:hover {
       text-decoration: underline;
+    }
+    .actions {
+      display: flex;
+      align-items: center;   
+      gap: 8px;              
+    }
+
+    .delete-form {
+      margin: 0;             
     }
   </style>
 </head>
@@ -297,18 +316,24 @@
 
             <tbody>
               <?php
+              //memasukkan file movie.php
               require_once '../movie.php';
+              //membuat objek dari class Movie
               $movie = new Movie();
+              //mengambil semua data movie
               $datas = $movie->getAllMovies();
+              //menampilkan data movie dalam tabel
               foreach ($datas as $data) {
               ?>
                 <tr>
                   <td class="poster-cell">
+                    <!-- menampilkan cover movie -->
                     <img
                       src="../images/<?= "$data[cover]" ?>" />
                   </td>
                   <td class="title-cell">
                     <div class="movie-info">
+                      <!-- menampilkan title movie -->
                       <span class="movie-title"><?= "$data[title]" ?></span>
                     </div>
                   </td>
@@ -325,12 +350,20 @@
                   <td class="action-cell">
                     <div>
                       <a class="edit-link" href="<?= "update.php?id=$data[id]" ?>"> Edit </a>
-                      <a class="delete-link" onclick="return confirm('apakah anda yakin?')" href="<?= "delete.php?id=$data[id]" ?>"> Delete </a>  
+                      <!-- <a class="delete-link" onclick="return confirm('apakah anda yakin?')" href="<?= "delete.php?id=$data[id]" ?>"> Delete </a> -->
+                      <form method="POST" action="<?php $_SERVER['PHP_SELF'] ?>" onsubmit="return confirm('Apakah anda yakin?');" class="delete-form">
+                        <input type="hidden" name="id" value="<?= $data['id'] ?>">
+                        <input class="delete-link" type="submit" name="delete" value="Hapus">
                       </form>
                     </div>
                   </td>
                 </tr>
               <?php
+              }
+
+              if(isset($_POST['delete'])) {
+                $movie->deleteMovie($_POST['id']);
+                header('Refresh:0');
               }
               ?>
             </tbody>
